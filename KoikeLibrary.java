@@ -36,11 +36,12 @@ import java.util.TreeMap;
 /**
  * KoikeLibrary．
  * <p>
- * Java実行における便利なメソッドライブラリ．
+ * Java実行における便利なメソッドライブラリ．<br>
+ * 2014.11.18 版
  * </p>
  * @author T.Koike
  * @since 1.0
- * @version 1.0
+ * @version 1.1
  *
  */
 public class KoikeLibrary {
@@ -81,6 +82,44 @@ public class KoikeLibrary {
 		public String readLine(){
 			try {
 				return super.readLine();
+			} catch (IOException e) {
+				System.err.println("読み込みでエラーが発生しました．");
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * 一行読み込み，Integer型で返す．
+		 * <p>
+		 * try-catchを行います．<br>
+		 * そのため例外はスローされません．
+		 * </p>
+		 * @since 1.1
+		 * @return 読み込んだ一行のInteger型
+		 */
+		public Integer readLineInt(){
+			try {
+				return Integer.valueOf(super.readLine());
+			} catch (IOException e) {
+				System.err.println("読み込みでエラーが発生しました．");
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * 一行読み込み，Double型で返す．
+		 * <p>
+		 * try-catchを行います．<br>
+		 * そのため例外はスローされません．
+		 * </p>
+		 * @since 1.1
+		 * @return 読み込んだ一行のDouble型
+		 */
+		public Double readLineDouble(){
+			try {
+				return Double.valueOf(super.readLine());
 			} catch (IOException e) {
 				System.err.println("読み込みでエラーが発生しました．");
 				e.printStackTrace();
@@ -265,6 +304,19 @@ public class KoikeLibrary {
 		}
 
 		/**
+		 * Objectを書き込む．
+		 * <p>
+		 * try-catchを行います．<br>
+		 * そのため例外はスローされません．
+		 * </p>
+		 * @since 1.1
+		 * @param o 書き込むObject
+		 */
+		public void write(Object o){
+			write(o.toString());
+		}
+
+		/**
 		 * 改行文字を書込む．
 		 * <p>
 		 * try-catchを行います．<br>
@@ -293,6 +345,16 @@ public class KoikeLibrary {
 		}
 
 		/**
+		 * Objectを改行文字と共に書き込む．
+		 * @since 1.1
+		 * @param o 書き込むObject
+		 */
+		public void writeln(Object o){
+			write(o.toString());
+			newLine();
+		}
+
+		/**
 		 * 文字列を書込み，その後フラッシュする．
 		 * @since 1.0
 		 * @param str 書き込む文字列
@@ -303,12 +365,33 @@ public class KoikeLibrary {
 		}
 
 		/**
+		 * Objectを書込み，その後フラッシュする．
+		 * @since 1.1
+		 * @param o 書き込むObject
+		 */
+		public void writeFlush(Object o){
+			write(o.toString());
+			flush();
+		}
+
+		/**
 		 * 文字列を改行文字と共に書込み，その後フラッシュする．
 		 * @since 1.0
 		 * @param str 書き込む文字
 		 */
 		public void writelnFlush(String str){
 			write(str);
+			newLine();
+			flush();
+		}
+
+		/**
+		 * Objectを改行文字と共に書込み，その後フラッシュする．
+		 * @since 1.1
+		 * @param o 書き込むObject
+		 */
+		public void writelnFlush(Object o){
+			write(o.toString());
 			newLine();
 			flush();
 		}
@@ -467,34 +550,38 @@ public class KoikeLibrary {
 	 * 統計
 	 * ――――――――――――――――――――――――――――――*/
 
-	/**
-	 * 箱ひげ図で必要な値を取得する．
-	 * @since 1.0
-	 * @param value 対象データリスト
-	 * @return {最小値,第一四分位数,中央値,第三四分位数,最大値}
-	 */
-	public static List<Double> getBoxPlotValue(List<Integer> value){
-		Collections.sort(value);
-		double center, first, third, start = 0, goal = value.size()-1;
-		double down = Math.floor((start+goal)*1.0/2);
-		double up = Math.ceil((start+goal)*1.0/2);
-		center = (value.get((int)down)+value.get((int)up))*1.0/2;
-		double down1 = Math.floor((start+down)*1.0/2);
-		double up1 = Math.ceil((start+down)*1.0/2);
-		first = (value.get((int)down1)+value.get((int)up1))*1.0/2;
-		double down2 = Math.floor((up+goal)*1.0/2);
-		double up2 =  Math.ceil((up+goal)*1.0/2);
-		third = (value.get((int)down2)+value.get((int)up2))*1.0/2;
-		Double min = Double.valueOf(value.get(0));
-		Double max = Double.valueOf(value.get(value.size()-1));
-		List<Double> result = new ArrayList<Double>();
-		result.add(min);
-		result.add(first);
-		result.add(center);
-		result.add(third);
-		result.add(max);
-		return result;
-	}
+
+/**
+     * 箱ひげ図で必要な値を取得する．
+     * <p>
+     * 1.1で引数がList<Integer>からList<Double>に変更されました．
+     * </p>
+     * @since 1.1
+     * @param value 対象データリスト
+     * @return {最小値,第一四分位数,中央値,第三四分位数,最大値}
+     */
+     public static List<Double> getBoxPlotValue(List<Double> value){
+          Collections.sort(value);
+          double center, first, third, start = 0, goal = value.size()-1;
+          double down = Math.floor((start+goal)*1.0/2);
+          double up = Math.ceil((start+goal)*1.0/2);
+          center = (value.get((int)down)+value.get((int)up))*1.0/2;
+          double down1 = Math.floor((start+down)*1.0/2);
+          double up1 = Math.ceil((start+down)*1.0/2);
+          first = (value.get((int)down1)+value.get((int)up1))*1.0/2;
+          double down2 = Math.floor((up+goal)*1.0/2);
+          double up2 =  Math.ceil((up+goal)*1.0/2);
+          third = (value.get((int)down2)+value.get((int)up2))*1.0/2;
+          Double min = Double.valueOf(value.get(0));
+          Double max = Double.valueOf(value.get(value.size()-1));
+          List<Double> result = new ArrayList<Double>();
+          result.add(min);
+          result.add(first);
+          result.add(center);
+          result.add(third);
+          result.add(max);
+          return result;
+     }
 
 	/**
 	 * PrecisionとRecallからF値を算出する
@@ -1205,6 +1292,23 @@ public class KoikeLibrary {
 	}
 
 	/**
+	 * String型リストの要素をデリミタで分割し，インデックス番目をDoubleでリストにまとめて取得する．
+	 * @since 1.1
+	 * @param list 対象のString型リスト
+	 * @param delimiter デリミタ
+	 * @param index 取得番地
+	 * @return Double型リスト
+	 */
+	public static List<Double> getListDoubleFromString(List<String> list, String delimiter, int index) {
+		List<Double> result = new ArrayList<Double>();
+		for(String str : list){
+			String[] split = str.split(delimiter);
+			result.add(Double.parseDouble(split[index]));
+		}
+		return result;
+	}
+
+	/**
 	 * 文字列を区切り文字で分割し，指定されたインデックスの文字列を取得します．
 	 * @since 1.0
 	 * @param str 対象となる文字列
@@ -1215,6 +1319,44 @@ public class KoikeLibrary {
 	public static String getStringSplit(String str, String delimiter, int index){
 		String[] split = str.split(delimiter);
 		return split[index];
+	}
+
+	/**
+	 * Integer型リストをDouble型リストに変換し取得します．
+	 * @since 1.1
+	 * @param list Integer型リスト
+	 * @return Double型リスト
+	 */
+	public static List<Double> getConvertDoubleList(List<Integer> list){
+		List<Double> result = new ArrayList<Double>();
+		for(Integer v : list){
+			result.add(Double.valueOf(v));
+		}
+		return result;
+	}
+
+	/**
+	 * Double型リストをInteger型リストに変換し取得します．
+	 * @since 1.1
+	 * @param list Double型リスト
+	 * @return Integer型リスト
+	 */
+	public static List<Integer> getConvertIntegerList(List<Double> list){
+		List<Integer> result = new ArrayList<Integer>();
+		for(Double v : list){
+			result.add(Integer.valueOf(String.valueOf(v)));
+		}
+		return result;
+	}
+
+	/**
+	 * String型リストをコピーし，取得する．
+	 * @since 1.1
+	 * @param list コピー元String型リスト
+	 * @return コピーされたString型リスト
+	 */
+	public static List<String> copy(List<String> list){
+		return new ArrayList<String>(list);
 	}
 
 	/*――――――――――――――――――――――――――――――
